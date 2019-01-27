@@ -3,6 +3,7 @@
     using Common.Models;
     using Newtonsoft.Json;
     using Plugin.Connectivity;
+    using Sales.Helpers;
     using System;
     using System.Collections.Generic;
     using System.Net.Http;
@@ -19,7 +20,7 @@
                 return new Response
                 {
                     IsSuccess = false,
-                    Message = "Please turn on your internet settings",
+                    Message = Languages.TurnOnInternet,
 
                 };
             }
@@ -30,7 +31,7 @@
                 return new Response
                 {
                     IsSuccess = false,
-                    Message = "Not internet connection",
+                    Message = Languages.NoInternet,
                 };
                
             }

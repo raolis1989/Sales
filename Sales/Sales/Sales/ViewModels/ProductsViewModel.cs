@@ -2,6 +2,7 @@
 {
     using GalaSoft.MvvmLight.Command;
     using Sales.Common.Models;
+    using Sales.Helpers;
     using Sales.Services;
     using System.Collections.Generic;
     using System.Collections.ObjectModel;
@@ -42,7 +43,7 @@
             if(!verifyConnection.IsSuccess)
             {
                 this.IsRefreshing = false;
-                await Application.Current.MainPage.DisplayAlert("Error", verifyConnection.Message, "Accept");
+                await Application.Current.MainPage.DisplayAlert(Languages.Error, verifyConnection.Message, Languages.Accept);
                 return;
 
             }
@@ -57,7 +58,7 @@
             if(!response.IsSuccess)
             {
                 this.IsRefreshing = false;
-                await Application.Current.MainPage.DisplayAlert("Error", response.Message, "Accept");
+                await Application.Current.MainPage.DisplayAlert(Languages.Error, response.Message, "Accept");
                 return;
             }
             var list = (List<Product>)response.Result;
