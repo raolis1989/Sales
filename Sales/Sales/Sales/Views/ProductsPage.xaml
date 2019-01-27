@@ -5,6 +5,10 @@
              x:Class="Sales.Views.ProductsPage"
              BindingContext="{Binding Main, Source={StaticResource Locator}}"
              Title="{i18n:Translate Products} ">
+    <ContentPage.ToolbarItems>
+        <ToolbarItem Icon="ic_action_add_circle_outline" Command="{Binding AddProductCommand}"/>
+
+    </ContentPage.ToolbarItems>
     <ContentPage.Content>
         <StackLayout
             Padding="5"
@@ -20,17 +24,32 @@
                         <ViewCell>
                             <Grid>
                                 <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="Auto"/>
                                     <ColumnDefinition Width="2*"/>
                                     <ColumnDefinition Width="*"/>
                                 </Grid.ColumnDefinitions>
-                                <Label 
-                                    FontAttributes="Bold"
+                                <Image
                                     Grid.Column="0"
+                                    WidthRequest="100"
+                                    Source="{Binding ImageFullPath}" >
+                                </Image>
+                                <StackLayout
+                                    VerticalOptions="Center"
+                                    Grid.Column="1"
+                                    >
+                                    <Label 
+                                    FontAttributes="Bold"                                    
                                     Text="{Binding Description}">
-                                </Label>
+                                    </Label>
+                                    <Label
+                                        Text="{Binding Remarks}"
+                                        >
+                                        
+                                    </Label>
+                                </StackLayout>
                                 <Label
                                     HorizontalOptions="End"
-                                    Grid.Column="1"
+                                    Grid.Column="2"
                                     Text="{Binding Prrice, StringFormat='{0:C2}'}"
                                     VerticalOptions="Center"
                                     >

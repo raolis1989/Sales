@@ -30,6 +30,19 @@
         [Display(Name = "Image")]
         public string ImagePath { get; set; } 
 
+        public string ImageFullPath
+        {
+            get
+            {
+                if (string.IsNullOrEmpty(this.ImagePath))
+                {
+                    return "dummyp";
+    
+                }
+                return $"http://192.168.0.100:9000/Sales.Backend/{this.ImagePath.Substring(1)}";
+            }
+        }
+
         public override string ToString()
         {
             return this.Description;
