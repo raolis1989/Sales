@@ -13,6 +13,8 @@ using Sales.Backend.Helpers;
 
 namespace Sales.Backend.Controllers
 {
+    [Authorize]
+
     public class ProductsController : Controller
     {
         private LocalDataContext db = new LocalDataContext();
@@ -39,6 +41,7 @@ namespace Sales.Backend.Controllers
             return View(product);
         }
 
+        
         // GET: Products/Create
         public ActionResult Create()
         {
