@@ -6,6 +6,7 @@
     using GalaSoft.MvvmLight.Command;
     using System.Collections.ObjectModel;
     using Sales.Helpers;
+    using Sales.Common.Models;
 
     public class MainViewModel
     {
@@ -15,7 +16,42 @@
         public EditProductViewModel EditProduct { get; set; }
 
         public LoginViewModel Login { get; set; }
+        public RegisterViewModel Register { get; set; }
+        public MyUserASP UserASP { get; set; }
         public ObservableCollection<MenuItemViewModel> Menu { get; set; }
+        public string UserFullName
+        {
+            get
+            {
+                if(this.UserASP!=null && this.UserASP.Claims != null && this.UserASP.Claims.Count>1)
+                {
+                    return $"{ this.UserASP.Claims[0].ClaimValue}{this.UserASP.Claims[1].ClaimValue}";
+                }
+                return null;
+            }
+        }
+
+
+        public string UserImageFullPath
+        {
+            get
+            {
+                foreach (var claim in this.UserASP.Claims)
+                {
+                    if (claim.ClaimType == "http://schemas.xmlsoap.org/ws/2005/05/identity/claims/uri")
+                    {
+                        if (claim.ClaimValue.StartsWith("~"))
+                        {
+                            return $"http://192.168.0.100:9000/SaleAPI{claim.ClaimValue.Substring(1)}";
+                        }
+
+                        return claim.ClaimValue;
+                    }
+                }
+
+                return null;
+            }
+        }
 
 
         #endregion

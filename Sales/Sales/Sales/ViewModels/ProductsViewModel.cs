@@ -4,9 +4,11 @@
     using Sales.Common.Models;
     using Sales.Helpers;
     using Sales.Services;
+    using System;
     using System.Collections.Generic;
     using System.Collections.ObjectModel;
     using System.Linq;
+    using System.Threading.Tasks;
     using System.Windows.Input;
     using Xamarin.Forms;
 
@@ -20,6 +22,7 @@
         private bool isRefreshing;
 
         private ObservableCollection<Product> products;
+        private DataService dataService; 
         #endregion
 
         #region Properties
@@ -54,6 +57,7 @@
         {
             instance = this;
             this.apiService = new ApiService();
+            this.dataService = new DataService();
             this.LoadProducts();
         }
         #endregion
@@ -77,34 +81,56 @@
         {
             var verifyConnection = await this.apiService.CheckConnection();
 
-            if(!verifyConnection.IsSuccess)
+            if(verifyConnection.IsSuccess)
             {
-                this.IsRefreshing = false;
-                await Application.Current.MainPage.DisplayAlert(Languages.Error, verifyConnection.Message, Languages.Accept);
-                return;
+               var answerr= await this.LoadProductsFromAPI(); 
+                if (answerr)
+                {
+                    this.SaveProductsToDB();
+                }
 
             }
+            else
+            {
+                await this.LoadProductsFromBD();
+            }
 
-
-
-            this.IsRefreshing = true;
-            var url = Application.Current.Resources["UrlAPI"].ToString();
+            if (this.MyProducts == null || this.MyProducts.Count==0 )
+            {
+                this.IsRefreshing = false;
+                await Application.Current.MainPage.DisplayAlert(Languages.Error, Languages.NoProductsMessage, Languages.Accept);
+                return;
+            }
            
-            var response = await this.apiService.GetList<Product>(url, "/api", "/Products", Settings.TokenType, Settings.AccessToken);
-
-            if(!response.IsSuccess)
-            {
-                this.IsRefreshing = false;
-                await Application.Current.MainPage.DisplayAlert(Languages.Error, response.Message, "Accept");
-                return;
-            }
-            this.MyProducts = (List<Product>)response.Result;
-            this.RefreshList();
-
-            
+            this.RefreshList();        
             this.IsRefreshing = false;
         }
 
+        private async Task LoadProductsFromBD()
+        {
+            this.MyProducts = await this.dataService.GetAllProducts();
+        }
+
+        private async Task SaveProductsToDB()
+        {
+            await this.dataService.DeleteAllProducts();
+             this.dataService.Insert(this.MyProducts);
+        }
+
+        private async Task<bool> LoadProductsFromAPI()
+        {
+            var url = Application.Current.Resources["UrlAPI"].ToString();
+
+            var response = await this.apiService.GetList<Product>(url, "/api", "/Products", Settings.TokenType, Settings.AccessToken);
+
+            if (!response.IsSuccess)
+            {
+              
+                return false;
+            }
+            this.MyProducts = (List<Product>)response.Result;
+            return true;
+        }
 
         public void RefreshList()
         {
